@@ -1,0 +1,14 @@
+# Arquivos gerados pelo Python
+__pycache__/
+*.pyc
+
+# Configurações locais do VSCode
+.vscode/
+
+# Ambientes virtuais
+venv/
+.venv/
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
