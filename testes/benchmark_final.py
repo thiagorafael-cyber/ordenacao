@@ -38,7 +38,7 @@ TODAS_ENTRADAS = {
 
 TAMANHOS_FINAIS = [100, 1000, 5000, 30000, 50000, 100000, 150000, 200000]
 
-REPETICOES = 3
+REPETICOES_PADRAO = 3
 
 ARQUIVO_SAIDA_PADRAO = "resultados_benchmark_final.csv"
 
@@ -58,6 +58,7 @@ def salvar_resultados(resultados, arquivo_saida):
         "algoritmo",
         "tipo_entrada",
         "tamanho",
+        "repeticoes",
         "tempo_medio",
         "comparacoes_medias",
         "status"
@@ -76,17 +77,50 @@ def escolher_arquivo_saida():
     print("Exemplo: resultados_merge_heap_quick.csv")
     print(f"Se deixar em branco, será usado: {ARQUIVO_SAIDA_PADRAO}")
 
-    nome_arquivo = input("\nNome do arquivo de saída: ").strip()
+    while True:
+        nome_arquivo = input("\nNome do arquivo de saída: ").strip()
 
-    if nome_arquivo == "":
-        nome_arquivo = ARQUIVO_SAIDA_PADRAO
+        if nome_arquivo == "":
+            nome_arquivo = ARQUIVO_SAIDA_PADRAO
 
-    if not nome_arquivo.endswith(".csv"):
-        nome_arquivo += ".csv"
+        if not nome_arquivo.endswith(".csv"):
+            nome_arquivo += ".csv"
 
-    os.makedirs("resultados", exist_ok=True)
+        os.makedirs("resultados", exist_ok=True)
 
-    return os.path.join("resultados", nome_arquivo)
+        arquivo_saida = os.path.join("resultados", nome_arquivo)
+
+        if os.path.exists(arquivo_saida):
+            resposta = input(
+                f"O arquivo '{arquivo_saida}' já existe. Deseja sobrescrever? (s/n): "
+            ).strip().lower()
+
+            if resposta == "s":
+                return arquivo_saida
+            else:
+                print("Escolha outro nome para o arquivo.")
+        else:
+            return arquivo_saida
+
+
+def escolher_repeticoes():
+    print("\nNúmero de repetições")
+    print(f"Digite o número de repetições para cada teste.")
+    print(f"Se deixar em branco, será usado: {REPETICOES_PADRAO}")
+
+    escolha = input("\nNúmero de repetições: ").strip()
+
+    if escolha == "":
+        return REPETICOES_PADRAO
+
+    if escolha.isdigit():
+        repeticoes = int(escolha)
+
+        if repeticoes > 0:
+            return repeticoes
+
+    print("Valor inválido. Será usado o padrão.")
+    return REPETICOES_PADRAO
 
 
 def executar_teste(nome_algoritmo, funcao_algoritmo, tipo_entrada, vetor_original, repeticoes):
@@ -120,13 +154,14 @@ def executar_teste(nome_algoritmo, funcao_algoritmo, tipo_entrada, vetor_origina
         "algoritmo": nome_algoritmo,
         "tipo_entrada": tipo_entrada,
         "tamanho": len(vetor_original),
+        "repeticoes": repeticoes,
         "tempo_medio": media_tempo,
         "comparacoes_medias": media_comparacoes,
         "status": "OK"
     }
 
 
-def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_escolhidos, arquivo_saida):
+def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_escolhidos, arquivo_saida, repeticoes):
     resultados = []
 
     for tamanho in tamanhos_escolhidos:
@@ -152,7 +187,7 @@ def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_esco
                         funcao_algoritmo,
                         tipo_entrada,
                         vetor_original,
-                        REPETICOES
+                        repeticoes
                     )
 
                 except RecursionError:
@@ -162,6 +197,7 @@ def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_esco
                         "algoritmo": nome_algoritmo,
                         "tipo_entrada": tipo_entrada,
                         "tamanho": tamanho,
+                        "repeticoes": repeticoes,
                         "tempo_medio": "",
                         "comparacoes_medias": "",
                         "status": "ERRO_RECURSAO"
@@ -180,6 +216,7 @@ def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_esco
                         "algoritmo": nome_algoritmo,
                         "tipo_entrada": tipo_entrada,
                         "tamanho": tamanho,
+                        "repeticoes": repeticoes,
                         "tempo_medio": "",
                         "comparacoes_medias": "",
                         "status": "ERRO"
@@ -292,22 +329,26 @@ def menu():
         if opcao == "1":
             if confirmar_benchmark_completo():
                 arquivo_saida = escolher_arquivo_saida()
+                repeticoes = escolher_repeticoes()
 
                 executar_benchmark(
                     list(TODOS_ALGORITMOS.values()),
                     list(TODAS_ENTRADAS.values()),
                     TAMANHOS_FINAIS,
-                    arquivo_saida
+                    arquivo_saida,
+                    repeticoes
                 )
 
         elif opcao == "2":
             arquivo_saida = escolher_arquivo_saida()
+            repeticoes = escolher_repeticoes()
 
             executar_benchmark(
                 list(TODOS_ALGORITMOS.values()),
                 list(TODAS_ENTRADAS.values()),
                 [100, 1000, 5000],
-                arquivo_saida
+                arquivo_saida,
+                repeticoes
             )
 
         elif opcao == "3":
@@ -328,12 +369,14 @@ def menu():
                 continue
 
             arquivo_saida = escolher_arquivo_saida()
+            repeticoes = escolher_repeticoes()
 
             executar_benchmark(
                 algoritmos_escolhidos,
                 entradas_escolhidas,
                 tamanhos_escolhidos,
-                arquivo_saida
+                arquivo_saida,
+                repeticoes
             )
 
         elif opcao == "0":
