@@ -40,7 +40,7 @@ TAMANHOS_FINAIS = [100, 1000, 5000, 30000, 50000, 100000, 150000, 200000]
 
 REPETICOES = 3
 
-ARQUIVO_SAIDA = "resultados/resultados_benchmark_final.csv"
+ARQUIVO_SAIDA_PADRAO = "resultados_benchmark_final.csv"
 
 
 def vetor_esta_ordenado(vetor):
@@ -51,7 +51,7 @@ def vetor_esta_ordenado(vetor):
     return True
 
 
-def salvar_resultados(resultados):
+def salvar_resultados(resultados, arquivo_saida):
     os.makedirs("resultados", exist_ok=True)
 
     campos = [
@@ -63,11 +63,30 @@ def salvar_resultados(resultados):
         "status"
     ]
 
-    with open(ARQUIVO_SAIDA, "w", newline="", encoding="utf-8") as arquivo_csv:
+    with open(arquivo_saida, "w", newline="", encoding="utf-8") as arquivo_csv:
         escritor = csv.DictWriter(arquivo_csv, fieldnames=campos)
 
         escritor.writeheader()
         escritor.writerows(resultados)
+
+
+def escolher_arquivo_saida():
+    print("\nArquivo de saída")
+    print("Digite apenas o nome do arquivo CSV.")
+    print("Exemplo: resultados_merge_heap_quick.csv")
+    print(f"Se deixar em branco, será usado: {ARQUIVO_SAIDA_PADRAO}")
+
+    nome_arquivo = input("\nNome do arquivo de saída: ").strip()
+
+    if nome_arquivo == "":
+        nome_arquivo = ARQUIVO_SAIDA_PADRAO
+
+    if not nome_arquivo.endswith(".csv"):
+        nome_arquivo += ".csv"
+
+    os.makedirs("resultados", exist_ok=True)
+
+    return os.path.join("resultados", nome_arquivo)
 
 
 def executar_teste(nome_algoritmo, funcao_algoritmo, tipo_entrada, vetor_original, repeticoes):
@@ -107,7 +126,7 @@ def executar_teste(nome_algoritmo, funcao_algoritmo, tipo_entrada, vetor_origina
     }
 
 
-def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_escolhidos):
+def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_escolhidos, arquivo_saida):
     resultados = []
 
     for tamanho in tamanhos_escolhidos:
@@ -150,8 +169,8 @@ def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_esco
 
                 except KeyboardInterrupt:
                     print("\nBenchmark interrompido pelo usuário.")
-                    salvar_resultados(resultados)
-                    print(f"Resultados parciais salvos em: {ARQUIVO_SAIDA}")
+                    salvar_resultados(resultados, arquivo_saida)
+                    print(f"Resultados parciais salvos em: {arquivo_saida}")
                     return
 
                 except Exception as erro:
@@ -167,10 +186,10 @@ def executar_benchmark(algoritmos_escolhidos, entradas_escolhidas, tamanhos_esco
                     }
 
                 resultados.append(resultado)
-                salvar_resultados(resultados)
+                salvar_resultados(resultados, arquivo_saida)
 
     print("\nBenchmark finalizado.")
-    print(f"Resultados salvos em: {ARQUIVO_SAIDA}")
+    print(f"Resultados salvos em: {arquivo_saida}")
 
 
 def mostrar_algoritmos():
@@ -272,17 +291,23 @@ def menu():
 
         if opcao == "1":
             if confirmar_benchmark_completo():
+                arquivo_saida = escolher_arquivo_saida()
+
                 executar_benchmark(
                     list(TODOS_ALGORITMOS.values()),
                     list(TODAS_ENTRADAS.values()),
-                    TAMANHOS_FINAIS
+                    TAMANHOS_FINAIS,
+                    arquivo_saida
                 )
 
         elif opcao == "2":
+            arquivo_saida = escolher_arquivo_saida()
+
             executar_benchmark(
                 list(TODOS_ALGORITMOS.values()),
                 list(TODAS_ENTRADAS.values()),
-                [100, 1000, 5000]
+                [100, 1000, 5000],
+                arquivo_saida
             )
 
         elif opcao == "3":
@@ -302,10 +327,13 @@ def menu():
                 print("Nenhum tamanho válido foi escolhido.")
                 continue
 
+            arquivo_saida = escolher_arquivo_saida()
+
             executar_benchmark(
                 algoritmos_escolhidos,
                 entradas_escolhidas,
-                tamanhos_escolhidos
+                tamanhos_escolhidos,
+                arquivo_saida
             )
 
         elif opcao == "0":
