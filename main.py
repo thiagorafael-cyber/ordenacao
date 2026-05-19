@@ -1,20 +1,29 @@
-from testes.benchmark import main as executar_benchmark
+from testes.benchmark_final import menu as executar_benchmark_final
+from graficos.gerar_graficos import main as gerar_graficos
 
 
 def main():
-    print("Algoritmos de Ordenação")
-    print("---------------------------------------------")
-    print("1 - Executar testes da Parte I")
-    print("0 - Sair")
+    while True:
+        print("\nTrabalho Prático 2 - Algoritmos de Ordenação")
+        print("---------------------------------------------")
+        print("1 - Executar benchmark final")
+        print("2 - Gerar gráficos")
+        print("0 - Sair")
 
-    opcao = input("Escolha uma opção: ")
+        opcao = input("Escolha uma opção: ")
 
-    if opcao == "1":
-        executar_benchmark()
-    elif opcao == "0":
-        print("Programa encerrado.")
-    else:
-        print("Opção inválida.")
+        if opcao == "1":
+            executar_benchmark_final()
+
+        elif opcao == "2":
+            gerar_graficos()
+
+        elif opcao == "0":
+            print("Programa encerrado.")
+            break
+
+        else:
+            print("Opção inválida.")
 
 
 if __name__ == "__main__":
