@@ -317,12 +317,12 @@ def confirmar_benchmark_completo():
 def menu():
     while True:
         print("\n" + "=" * 70)
-        print("BENCHMARK FINAL - ALGORITMOS DE ORDENAÇÃO")
+        print("BENCHMARK - ALGORITMOS CLÁSSICOS DE ORDENAÇÃO")
         print("=" * 70)
-        print("1 - Rodar benchmark completo exigido no trabalho")
-        print("2 - Rodar teste rápido")
-        print("3 - Escolher algoritmos, entradas e tamanhos")
-        print("0 - Sair")
+        print("1 - Rodar benchmark completo dos algoritmos clássicos")
+        print("2 - Rodar teste rápido dos algoritmos clássicos")
+        print("3 - Escolher algoritmos clássicos, entradas e tamanhos")
+        print("0 - Voltar ao menu principal")
 
         opcao = input("\nEscolha uma opção: ")
 
@@ -380,7 +380,7 @@ def menu():
             )
 
         elif opcao == "0":
-            print("Programa encerrado.")
+            print("Voltando ao menu principal.")
             break
 
         else:
