@@ -78,6 +78,6 @@ def aoh_recursivo(vetor, primeiro, ultimo, limite):
     return comparacoes
 
 
-def aoh(vetor, limite=32):
+def aoh(vetor, limite=16):
     comparacoes = aoh_recursivo(vetor, 0, len(vetor) - 1, limite)
     return vetor, comparacoes
