@@ -407,19 +407,3 @@ __pycache__/
 ```
 
 não fazem parte da implementação e são ignorados pelo Git por meio do arquivo `.gitignore`.
-
-## Situação atual do projeto
-
-A implementação dos algoritmos clássicos está concluída, assim como:
-
-- benchmark dos algoritmos clássicos;
-- benchmark do AOH;
-- geração de gráficos comparativos;
-- geração de gráficos dos limites do AOH.
-
-As próximas etapas do trabalho são:
-
-- escrever a análise dos resultados no relatório;
-- justificar a escolha do AOH;
-- comparar o AOH com os algoritmos clássicos;
-- preparar a apresentação final.
